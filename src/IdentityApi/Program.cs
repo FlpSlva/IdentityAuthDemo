@@ -1,7 +1,11 @@
 using IdentityApi.Data;
+using IdentityApi.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +29,31 @@ builder.Services.AddSwaggerGen(c =>
         License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") }
     });
 });
+
+var appJwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
+builder.Services.Configure<JwtSettings>(appJwtSettingsSection);
+
+var jwtSettings = appJwtSettingsSection.Get<JwtSettings>();
+var key = Encoding.ASCII.GetBytes(jwtSettings.Secret);
+builder.Services.AddAuthentication(_ =>
+{
+    _.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    _.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(_ =>
+{
+    _.RequireHttpsMetadata = true;
+    _.SaveToken = true;
+    _.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = jwtSettings.ValidIn,
+        ValidIssuer = jwtSettings.Issuer
+    };
+});
+
 
 var app = builder.Build();
 
