@@ -1,5 +1,7 @@
 ﻿using IdentityApi.Extensions;
 using IdentityApi.Models;
+using IdentityApi.services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -15,13 +17,16 @@ public class AuthController : MainController
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly JwtSettings _jwtSettings;
+    private readonly IAuthenticateService _authenticateService;
 
     public AuthController(SignInManager<IdentityUser> signInManager,
                           UserManager<IdentityUser> userManager,
+                          IAuthenticateService authenticateService,
                           IOptions<JwtSettings> jwtSettings)
     {
         _signInManager = signInManager;
         _userManager = userManager;
+        _authenticateService = authenticateService;
         _jwtSettings = jwtSettings.Value;
 
     }
@@ -42,6 +47,13 @@ public class AuthController : MainController
 
         if (result.Succeeded)
         {
+            var customerResult = await _authenticateService.Register(userRegister);
+            if(customerResult == null)
+            {
+                await _userManager.DeleteAsync(user);
+                return CustomResponse();
+            }
+
             return CustomResponse(await JwtGenerate(userRegister.Email));
         }
 

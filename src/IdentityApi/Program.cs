@@ -1,5 +1,7 @@
 using IdentityApi.Data;
 using IdentityApi.Extensions;
+using IdentityApi.services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +18,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddHttpClient<IAuthenticateService, AuthenticateService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
