@@ -1,4 +1,14 @@
-# IdentityAuthDemo
 
-Welcome to the IdentityAuthDemoproject! This project is designed to provide a seamless user registration and login experience, all powered by Identity Server. By combining the power of ASP.NET Core and Identity, this project demonstrates how to create a secure authentication system that generates user tokens.
+## IdentityAuthDemo
+
+### Register
+<img src="https://github.com/FlpSlva/IdentityAuthDemo/assets/84188331/74c16fe5-73fc-47f0-949d-f29f7188b95e" alt="RegisterCustomer - IdentityAuthDemo" width="500">
+
+### Login
+<img src="https://github.com/FlpSlva/IdentityAuthDemo/assets/84188331/c289d9ff-b3dc-4c27-8f51-34793504ab14" alt="LoginUser - IdentityAuthDemo" width="500">
+
+
+## About this project
+
+Welcome to IdentityAuthDemo! Experience user registration and login powered by Identity Framework using ASP.NET Core for secure authentication.
 
