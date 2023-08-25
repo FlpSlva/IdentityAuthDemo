@@ -10,4 +10,12 @@ public class Customer : Entity
     }
     public string Name { get; private set; }
     public string Email { get; private set; }
+
+    public void AssignId(Guid id)
+    {
+        if (id != Guid.Empty)
+        {
+            Id = id;
+        }
+    }
 }
