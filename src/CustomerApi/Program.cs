@@ -1,10 +1,13 @@
 using CustomerApi.Data;
+using CustomerApi.Models;
+using CustomerApi.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDbContext<CustomerContext>(_ => _.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<ICustomerRepository<Customer>, CustomerRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
