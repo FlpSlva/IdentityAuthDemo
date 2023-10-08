@@ -1,4 +1,6 @@
-﻿namespace IdentityApi.Configuration;
+﻿using IdentityApi.Extensions;
+
+namespace IdentityApi.Configuration;
 
 public static class ApiConfig
 {
@@ -10,7 +12,7 @@ public static class ApiConfig
         services.ResolveDependence();
 
         services.AddControllers();
-
+        services.Configure<UrlAddress>(configuration);
         services.AddSwaggerConfiguration();
 
         return services;
