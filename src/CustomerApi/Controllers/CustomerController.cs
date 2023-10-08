@@ -1,9 +1,7 @@
 ﻿using CustomerApi.Data;
 using CustomerApi.Dtos;
 using CustomerApi.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
 
 namespace CustomerApi.Controllers;
 

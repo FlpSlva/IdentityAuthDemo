@@ -1,7 +1,6 @@
 ﻿using IdentityApi.Extensions;
 using IdentityApi.Models;
 using IdentityApi.services;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -97,6 +96,19 @@ public class AuthController : MainController
     {
         var user = await _userManager.FindByEmailAsync(email);
         var claims = await _userManager.GetClaimsAsync(user);
+
+
+        var identityClaims = await GetClaimsUser(claims, user);
+
+        var encodedToken = EncodeToken(identityClaims);
+
+
+        return GetResponseToken(encodedToken, user, claims);
+
+    }
+
+    private async Task<ClaimsIdentity> GetClaimsUser(ICollection<Claim> claims, IdentityUser user)
+    {
         var userRoles = await _userManager.GetRolesAsync(user);
 
         claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id));
@@ -113,6 +125,11 @@ public class AuthController : MainController
         var identityClaims = new ClaimsIdentity();
         identityClaims.AddClaims(claims);
 
+        return identityClaims;
+    }
+
+    private string EncodeToken(ClaimsIdentity identityClaims)
+    {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
 
@@ -125,9 +142,12 @@ public class AuthController : MainController
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         });
 
-        var encodedToken = tokenHandler.WriteToken(token);
+        return tokenHandler.WriteToken(token);
+    }
 
-        var response = new UserResponseLogin
+    private UserResponseLogin GetResponseToken(string encodedToken, IdentityUser user, IEnumerable<Claim> claims)
+    {
+        return new UserResponseLogin
         {
             AccessToken = encodedToken,
             ExpiresIn = TimeSpan.FromHours(_jwtSettings.TimesExpires).TotalSeconds,
@@ -138,8 +158,6 @@ public class AuthController : MainController
                 Claims = claims.Select(c => new UserClaim { Type = c.Type, Value = c.Value })
             }
         };
-        return response;
-
     }
 
     private static long ToUnixEpochDate(DateTime date)
