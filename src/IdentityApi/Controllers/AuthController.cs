@@ -1,7 +1,6 @@
 ﻿using IdentityApi.Extensions;
 using IdentityApi.Models;
 using IdentityApi.services;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
